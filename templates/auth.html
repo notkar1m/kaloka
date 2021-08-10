@@ -1,0 +1,73 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Alertify -->
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css"/>
+    <!--  -->
+    <link rel="stylesheet" href="/static/styles/auth.css?r={{r}}">
+    <title id="title">Worldify - Login/Sign up</title>
+</head>
+<body style="align-items:center;justify-content: center;text-align:center;">
+    <br>
+    {%with messages = get_flashed_messages(with_categories=true)%}
+        {%if messages%}
+            {%for category, message in messages%}
+                {%if category == 'error'%}
+                    <script>alertify.error('{{message}}')</script>
+                {%else%}
+                    <script>alertify.success('{{message}}')</script>
+    {%endif%}{%endfor%}{%endif%}{%endwith%}
+    <button class="btn" id="switcher" onclick="switcher()">Sign Up?</button><br><br>
+    <div id="login">
+        <form  action="/login" method="POST">
+            <input value="{{name}}" class="grey-input" required type="text" name="name" placeholder="Username"><br><br>
+            <input value="{{pw}}" class="grey-input" required type="password" name="pw" placeholder="Password"><br><br>
+            <button class="btn" type="submit">Login</button>
+        </form>
+    </div>
+    <div id="signUp" style="display:none;">
+        <form action="/sign-up" method="POST" enctype="multipart/form-data">
+            <input class="grey-input" required type="text" name="name" placeholder="Username" id="username"><br><br>
+            <input class="grey-input" required type="password" id="pw" name="pw" placeholder="Password"><br><br>
+
+            <button class="btn" type="submit" id="sign-up-btn">Create Account</button>
+        </form>
+    </div>
+    <br><br>
+    <div class="madeby">
+        <h4>Made By <a style="color:#fefefe" href="/user/kar1m">Kar1m Hany</a></h4>
+    </div>
+</body>
+</html>
+<script>
+    let login = false;
+    function switcher(){
+        login = !login
+        let switcher = document.getElementById("switcher")
+        let loginn = document.getElementById("login")
+        let signup = document.getElementById("signUp")
+    
+        if(!login){
+            switcher.innerText = "Sign Up?"
+            loginn.style = "display:unset"
+            signup.style = "display:none"
+            
+        }
+        else{
+            switcher.innerText = "Login?"
+            loginn.style = "display:none"
+            signup.style = "display:unset"
+        }
+    }
+    const loadFile = function(event) {
+        var image = document.getElementById('output');
+        image.src = URL.createObjectURL(event.target.files[0]);
+    };
+</script>

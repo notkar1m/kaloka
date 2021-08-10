@@ -1,0 +1,303 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/383a3bf828.js" crossorigin="anonymous"></script>
+    <!-- Alertify -->
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css"/>
+    <!--  -->    
+    <link rel="stylesheet" href="/static/styles/player.css?r={{r}}">
+    <link rel="stylesheet" href="/static/styles/index.css?r={{r}}">
+    <script src="/static/scripts/index.js?r={{r}}"></script>
+    <link id="web-icon" rel="shortcut icon" href="https://i.scdn.co/image/{{img}}" type="image/x-icon">
+    <title>Title</title>
+</head>
+<body>
+    {%with messages = get_flashed_messages(with_categories=true)%}
+    {%if messages%}
+        {%for category, message in messages%}
+            {%if category == 'error'%}
+                <script>alertify.error('{{message}}')</script>
+            {%else%}
+                <script>alertify.success('{{message}}')</script>
+{%endif%}{%endfor%}{%endif%}{%endwith%}
+    <!--#region song  -->
+    <p style="display: none;" id="isplaylist"></p>
+    {%if not playlist_songs and playlist_songs != {}%}
+            <div id="nav">
+                <a href="javascript:switcher('search')" id="search-a">Search</a>
+                <a href="javascript:switcher('home')" class="active-a" id="home-a">Home</a>
+                <a href="javascript:switcher('library')" id="library-a">Library</a>
+            </div>
+            <br><br><br>
+            <div id="home" style="display: block;">
+                <h4 style="text-align: center;font-size:30px;">Recommended Based On Your Liked Songs</h4>
+                <a id="show-less-req-songs-like" href="javascript:show('show-more-req-songs-like');hide('show-less-req-songs-like');hide('req-songs-like')" style="text-align: center !important;">Show Less</a>
+                <a id="show-more-req-songs-like" href="javascript:hide('show-more-req-songs-like');show('show-less-req-songs-like');show('req-songs-like')" style="display: none;text-align:center;">Show More</a>
+                <br><br>
+                <div id="req-songs-like" style="align-items:center;justify-content: center;text-align:center;">
+                    {%for song in req_songs%}
+                    
+                        <div class="song-div">
+                            <h4>{{song}}</h4>
+                            <br>
+                            <img onclick="window.location.href=`/song$$img={{req_songs[song]['img']}}$$name={{song}}`" src="https://i.scdn.co/image/{{req_songs[song]['img']}}"><br>
+                            <br><br>
+                        </div>
+
+                    {%endfor%}
+
+                </div>
+
+                <h4 style="text-align: center;font-size:30px;">Recommended Based On Your Recently Played Songs</h4>
+                <a id="show-less-req-songs-recent" href="javascript:show('show-more-req-songs-recent');hide('show-less-req-songs-recent');hide('req-songs-recent')" style="text-align: center !important;">Show Less</a>
+                <a id="show-more-req-songs-recent" href="javascript:hide('show-more-req-songs-recent');show('show-less-req-songs-recent');show('req-songs-recent')" style="display: none;text-align:center;">Show More</a>
+                <br><br>
+                <div id="req-songs-recent" style="align-items:center;justify-content: center;text-align:center;">
+                    {%for song in req_songs2%}
+                    
+                        <div class="song-div">
+                            <h4>{{song}}</h4>
+                            <br>
+                            <img draggable="false" onclick="window.location.href=`/song$$img={{req_songs2[song]['img']}}$$name={{song}}`" src="https://i.scdn.co/image/{{req_songs2[song]['img']}}"><br>
+                            <br><br>
+                        </div>
+
+                    {%endfor%}
+
+                </div>
+            </div>
+
+            <div id="search" style="display: none;">
+                <div id="search-div">
+                    <input type="text" placeholder="Song Name" class="grey-input" id="search-text"><br><br><br>
+                    <button class="btn" id="search-btn" onclick="search(document.getElementById('search-text').value)">Search</button>
+                </div><br><br>
+                <div id="res-div"></div>
+            </div>
+
+            <div id="library" style="display: none;">
+
+                <h4 style="text-align: center;font-size:30px;">Library</h4>    
+                <br><br>
+                <a href="/new-playlist" id="new-playlist-a">Create Playlist</a>
+
+                <h4 style="font-size: 20px;">Playlists<br><a id="hide-playlists-a" href="javascript:hide('playlists-songs');show('show-playlists-a');hide('hide-playlists-a')">Show Less</a> <a style="display: none;" id="show-playlists-a" href="javascript:show('playlists-songs');hide('show-playlists-a');show('hide-playlists-a')">Show More</a></h4>
+                <div id="playlists-songs" style="align-items:center;justify-content: center;text-align:center;">
+                    {%for playlist in playlists%}
+                        <div class="playlist-div" onclick="window.location.href=`/playlist/{{name}}/{{playlist}}`">
+                            <h4>{{playlist}}</h4>
+                            <br><br>
+                        </div>
+                    {%endfor%}
+                </div>
+                <br><br>
+
+                <h4 style="font-size: 20px;">Liked Songs<br><a id="hide-like-a" href="javascript:hide('liked-songs');show('show-like-a');hide('hide-like-a')">Show Less</a> <a style="display: none;" id="show-like-a" href="javascript:show('liked-songs');hide('show-like-a');show('hide-like-a')">Show More</a></h4>
+                <div id="liked-songs" style="align-items:center;justify-content: center;text-align:center;">
+                    {%for song in liked%}
+                        <div class="song-div">
+                            <h4>{{song}}</h4>
+                            <br>
+                            <img onclick="window.location.href=`/song$$img={{liked[song]['img']}}$$name={{song}}`" src="https://i.scdn.co/image/{{liked[song]['img']}}"><br>
+                            <br><br>
+                        </div>
+                    {%endfor%}
+                </div>
+                <br><br>
+                <h4 style="font-size: 20px;">Recently Played<br><a id="hide-hist-a" href="javascript:hide('hist-songs');show('show-hist-a');hide('hide-hist-a')">Show Less</a> <a style="display: none;" id="show-hist-a" href="javascript:show('hist-songs');hide('show-hist-a');show('hide-hist-a')">Show More</a></h4>
+                <div id="hist-songs" style="align-items:center;justify-content: center;text-align:center;">
+                    {%for song in history%}
+                        <div class="song-div">
+                            <h4>{{song}}</h4>
+                            <br>
+                            <img onclick="window.location.href=`/song$$img={{history[song]['img']}}$$name={{song}}`" src="https://i.scdn.co/image/{{history[song]['img']}}"><br>
+                            <br><br>
+                        </div>
+                    {%endfor%}
+                </div>
+            </div>
+
+            <div id="lyrics" style="display: none;">
+                <div id="lyrics-text">Loading...</div>
+            </div>
+            
+
+
+            <br><br><br>
+            {%if src != ""%}
+                <script>
+                    window.addEventListener("load", () => {
+                        ly("{{songReal}}", "{{artist}}")
+                    })
+                </script>
+                <div id="app-cover">
+                    <audio id="audio" src="{{src}}"></audio>
+                    <div id="player">
+                        <div id="player-track">
+                            <div id="album-name">{{songName}}</div>
+                            <div id="track-name"></div>
+                            <div id="track-time">
+                                <div id="current-time"></div>
+                                <div id="track-length"></div>
+                            </div>
+                            <!-- <div id="s-area">
+                                <div id="ins-time"></div>
+                                <div id="s-hover"></div>
+                                <div id="seek-bar"></div>
+                                
+                            </div> -->
+                        </div>
+                        <div id="player-content">
+                            <div id="album-art">
+                                <img src="https://i.scdn.co/image/{{img}}" class="active" id="_1">
+
+                                <div id="buffer-box">Buffering ...</div>
+                            </div>
+                            <div id="player-controls">
+                                <div class="control">
+                                    <div onclick="like('{{img}}', '{{songName}}')" class="button" id="play-previous">
+                                        <i id="like-btn" class="fas fa-heart"></i>
+                                    </div>
+                                </div>
+                                <div class="control">
+                                    <div onclick="playSong()" class="button" id="btn-player">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                </div>
+                                <div class="control">
+                                    <div onclick="looper()" class="button" id="play-next">
+                                        <i id="loop-i" class="fas fa-undo"></i>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <input type="range" oninput="changeVol(this.value)" id="vol-range">
+                            <input type="range" id="slider-range" value="0" min="0" max="231.201" oninput="skiper(this.value)" onchange="skiper(this.value)"><br>
+                            <button class="lyrics-btn" onclick="show('lyrics');show('lyrics-btn-2');hide('lyrics-btn-1')" id="lyrics-btn-1"><i class="fas fa-align-left"></i></button>
+                            <button class="lyrics-btn" style="display: none;color:rgb(255, 76, 41)" onclick="hide('lyrics');hide('lyrics-btn-2');show('lyrics-btn-1')" id="lyrics-btn-2"><i class="fas fa-align-left"></i></button>
+                            <!-- <br><span id="vol-text">Volume: 5/10</span> -->
+                </div>  
+
+
+                {%if isliked%}
+                    <style>
+                        #like-btn{
+                            color:rgb(255, 76, 41)
+                        }
+                    </style>
+                {%endif%}
+            
+            
+            {%endif%}
+
+    {%endif%}
+    <!--#endregion  -->
+    
+
+    <!-- #region playlist -->
+    {%if playlist_songs or playlist_songs == {}%}
+            <p id="isplaylist" style="display:none">yes</p>
+            <div id="lyrics" style="display: none;">
+                <div id="lyrics-text">Loading...</div>
+            </div>
+            <div id="nav">
+                <a href="javascript:hide('search');show('home-div');" id="home-a">Home</a>
+                <a href="javascript:show('search');hide('home-div');" id="search-a">Add Song</a>
+            </div><br><br><br>
+            <div id="search" style="display: none;">
+                <div id="search-div">
+                    <input type="text" placeholder="Song Name" class="grey-input" id="search-text"><br><br><br>
+                    <button class="btn" id="search-btn" onclick="add_playlist(document.getElementById('search-text').value, '{{playlistName}}')">Search</button>
+                </div><br><br>
+                <div id="res-div"></div>
+            </div>
+            <div id="home-div" style="align-items:center;justify-content: center;text-align:center;">
+                {%for song in playlist_songs%}
+                    <div class="song-div">
+                        <h4>{{song}}</h4>
+                        <h4 class="hidden-h4">{{playlist_songs[song]['src']}}</h4>
+                        <h4 class="hidden-h4">{{playlist_songs[song]['img']}}</h4>
+                        <br>
+                        <img onclick="playSongPlaylist('{{song}}' ,`{{playlist_songs[song]['src']}}`, `{{playlist_songs[song]['img']}}`)" src="https://i.scdn.co/image/{{playlist_songs[song]['img']}}"><br>
+                        <br><br>
+                    </div>
+                {%endfor%}
+                <script>
+                    window.addEventListener("load", () => {
+                        let first_song = document.getElementsByClassName("song-div")[0].innerText.split("\n")[0]
+                        let first_song_src = document.getElementsByClassName("song-div")[0].innerText.split("\n")[1]
+                        let first_song_img = document.getElementsByClassName("song-div")[0].innerText.split("\n")[2]
+                        for(let i = 0; i<document.getElementsByClassName("hidden-h4").length;i++){
+                            document.getElementsByClassName("hidden-h4")[i].style.display = "none"
+                        }
+                        playSongPlaylist(first_song, first_song_src, first_song_img)
+                    })
+                </script>
+
+            </div>
+            <br><br><br><br><br><br><br><br><br><br><br><br>
+<!-- add$$img=<img>$$name=<songName>$$playlist=<playlistName> -->
+
+            <div id="app-cover">
+                <audio id="audio" src="{{src}}"></audio>
+                <div id="player">
+                    <div id="player-track">
+                        <div id="album-name">{{songName}}</div>
+                        <div id="track-name"></div>
+                        <div id="track-time">
+                            <div id="current-time"></div>
+                            <div id="track-length"></div>
+                        </div>
+                        <!-- <div id="s-area">
+                            <div id="ins-time"></div>
+                            <div id="s-hover"></div>
+                            <div id="seek-bar"></div>
+                            
+                        </div> -->
+                    </div>
+                    <div id="player-content">
+                        <div id="album-art">
+                            <img src="" class="active" id="_1">
+
+                            <div id="buffer-box">Buffering ...</div>
+                        </div>
+                        <div id="player-controls">
+                            <div class="control">
+                                <div onclick="nextSongPlaylist()" class="button" id="play-previous">
+                                    <i id="next-btn" class="fas fa-forward"></i>
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div onclick="playSong()" class="button" id="btn-player">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div onclick="looper()" class="button" id="play-next">
+                                    <i id="loop-i" class="fas fa-undo"></i>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <input type="range" oninput="changeVol(this.value)" id="vol-range">
+                        <span id="span-slider-range"><input type="range" id="slider-range" value="0" min="0" max="231" oninput="skiper(this.value)" onchange="skiper(this.value)"></span>
+                        <br>
+                        <button class="lyrics-btn" onclick="show('lyrics');show('lyrics-btn-2');hide('lyrics-btn-1')" id="lyrics-btn-1"><i class="fas fa-align-left"></i></button>
+                        <button class="lyrics-btn" style="display: none;color:rgb(255, 76, 41)" onclick="hide('lyrics');hide('lyrics-btn-2');show('lyrics-btn-1')" id="lyrics-btn-2"><i class="fas fa-align-left"></i></button>
+                        <!-- <br><span id="vol-text">Volume: 5/10</span> -->
+            </div>  
+
+
+
+    {%endif%}
+
+    <!-- #endregion -->
+    <br><br><br><br>
+</body>
+</html>

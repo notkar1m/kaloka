@@ -1,0 +1,33 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles/new-playlist.css?r={{r}}">
+    <!-- Alertify -->
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css"/>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css"/>
+    <!--  -->
+
+    <title>Title - New Playlist</title>
+</head>
+<body style="align-items:center;justify-content: center;text-align:center;">
+    {%with messages = get_flashed_messages(with_categories=true)%}
+    {%if messages%}
+        {%for category, message in messages%}
+            {%if category == 'error'%}
+                <script>alertify.error('{{message}}')</script>
+            {%else%}
+                <script>alertify.success('{{message}}')</script>
+{%endif%}{%endfor%}{%endif%}{%endwith%}
+    <h4 style="font-size:30px">New Playlist</h4><br><br>
+    <form action="/new-playlist" method="POST">
+        <input type="text" placeholder="Playlist Name" class="grey-input" name="playlist-name"><br><br>
+        <label style="font-size: 20px;" for="privacy">Private Playlist: </label><input type="checkbox" name="prv" id="privacy"><br><br>
+        <button type="submit" class="btn">Create Playlist</button>
+    </form>
+</body>
+</html>
