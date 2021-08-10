@@ -1,0 +1,7 @@
+youtube_dl
+functools
+flask
+lyricsgenius
+asyncio
+spotipy
+spotify_dl
