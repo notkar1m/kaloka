@@ -1,8 +1,15 @@
+# import os
+# os.system("pip3 install spotify_dl")
+# os.system("pip3 install functools")
+# os.system("pip3 install youtube_dl")
+# os.system("pip3 install lyricsgenius")
+# os.system("pip3 install hashlib")
+# os.system("pip3 install asyncio")
 from youtube_dl import YoutubeDL
 from functools import partial
 from flask import *
+from spotipy.oauth2 import SpotifyClientCredentials
 import json, hashlib, random, lyricsgenius, spotipy, asyncio
-from spotipy.oauth2 import SpotifyClientCredentials  #To access authorised Spotify data
 
 # os.system("pip install spotify_dl")
 
@@ -129,7 +136,6 @@ def sign_up():
                 "last":{}
             }
             saveJson()
-
             cookie = make_response(redirect('/'))
             cookie.set_cookie("name", name)
             cookie.set_cookie("pw", pw)

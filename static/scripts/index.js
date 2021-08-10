@@ -275,7 +275,7 @@ function playSongPlaylist(songName, src, img){
     currPlaylistPlaying = songName
 
     document.getElementById("web-icon").href = `https://i.scdn.co/image/${img}`
-    document.getElementsByTagName("title")[0].innerText = "Title - " + songName.split("{")[0]
+    document.getElementsByTagName("title")[0].innerText = "Kaloka - " + songName.split("{")[0]
     playSong()
     if(paused == false){
         playSong()
